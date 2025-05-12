@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import Layout from '../components/Layout';
-import {
-  generateCsvData,
-  constructDataUrl,
-} from '../utils/downloadPageController';
+import { generateCsvData } from '../utils/downloadPageController';
 
 export default function DownloadPage({ signOut }) {
   // holds document data
@@ -87,6 +84,7 @@ export default function DownloadPage({ signOut }) {
 
   function handleDownloadSubmit(event) {
     event.preventDefault();
+
     if (!verifiedData) {
       console.error('No document available for download');
       return;
@@ -100,16 +98,12 @@ export default function DownloadPage({ signOut }) {
       console.error('No file type selected');
       return;
     }
-    // Extract the original filename, remove 'input/
-    let originalFilename = verifiedData.document_key
-      ? verifiedData.document_key.replace(/^input\//, '')
-      : 'document_data';
 
     // download function based on selected file type
     if (fileType === 'csv') {
-      downloadCSV(verifiedData, originalFilename);
+      downloadCSV();
     } else {
-      downloadJSON(verifiedData, originalFilename);
+      downloadJSON();
     }
   }
 
