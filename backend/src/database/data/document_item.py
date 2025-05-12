@@ -10,6 +10,5 @@ class DocumentItem:
     document_type: str | None = None
     extracted_data: dict[str, Any] | None = None
 
-    @staticmethod
-    def document_item_to_dict(document) -> dict[str, Any]:
-        return {k: v for k, v in asdict(document).items() if v is not None}
+    def to_dict(self) -> dict[str, Any]:
+        return {k: v for k, v in asdict(self).items() if v is not None}

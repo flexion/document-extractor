@@ -31,7 +31,7 @@ class DynamoDb(Database):
 
     def write_document(self, document: DocumentItem):
         try:
-            dynamodb_item = self._marshal_dynamodb_json(DocumentItem.document_item_to_dict(document))
+            dynamodb_item = self._marshal_dynamodb_json(document.to_dict())
             self.dynamodb_client.put_item(TableName=self.table, Item=dynamodb_item)
         except Exception as e:
             raise DatabaseException("Failed to write the document") from e
