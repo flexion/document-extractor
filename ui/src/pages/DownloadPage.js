@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import Layout from '../components/Layout';
-import { generateCsvData } from '../utils/downloadPageController';
+import {
+  generateCsvData,
+  constructDataUrl,
+} from '../utils/downloadPageController';
 
 export default function DownloadPage({ signOut }) {
   // holds document data
@@ -53,13 +56,7 @@ export default function DownloadPage({ signOut }) {
 
     const csvContent = generateCsvData(verifiedData.extracted_data);
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'document.csv');
-    document.body.appendChild(link);
-    link.click();
+    downloadData(csvContent, 'text/csv', 'document.csv');
   }
 
   function downloadJSON() {
@@ -68,13 +65,24 @@ export default function DownloadPage({ signOut }) {
       return;
     }
     const jsonContent = JSON.stringify(verifiedData, null, 2);
-    const blob = new Blob([jsonContent], { type: 'application/json' });
+
+    downloadData(jsonContent, 'application/json', 'document.json');
+  }
+
+  async function downloadData(content, contentType, filename) {
+    const blob = new Blob([content], { type: contentType });
     const url = URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'document.json';
-    link.click();
+    try {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+    } finally {
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000); // Small delay to ensure download starts
+    }
   }
 
   function handleDownloadSubmit(event) {
