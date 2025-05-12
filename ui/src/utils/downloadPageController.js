@@ -1,5 +1,5 @@
 export function generateCsvData(extractedData) {
-  let csvData = 'data:text/csv;charset=utf-8,Field,Value\n';
+  let csvData = 'Field,Value\n';
 
   const sortedEntries = Object.entries(extractedData).sort(([keyA], [keyB]) =>
     keyA.localeCompare(keyB, undefined, { numeric: true })
