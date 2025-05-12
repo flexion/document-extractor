@@ -3,6 +3,7 @@ from unittest import mock
 import pytest
 
 from src import context
+from src.database.data.document_item import DocumentItem
 from src.database.database import Database
 from src.database.exception import DatabaseException
 from src.documents import write_document
@@ -19,14 +20,9 @@ def test_write_document_works():
     context.register(Database, mock_database)
 
     expected_document_id = "DogCow"
-    expected_status = "processing"
     expected_document_url = "s3://DogCow/Key"
 
-    expected_item = {
-        "document_id": expected_document_id,
-        "status": expected_status,
-        "document_url": expected_document_url,
-    }
+    expected_item = DocumentItem(expected_document_id, expected_document_url)
 
     write_document.write_document(expected_document_id, expected_document_url)
 
@@ -54,13 +50,9 @@ def test_update_document_works():
     expected_extracted_data = {
         "name": "Clarus",
     }
-    expected_item = {
-        "document_id": expected_document_id,
-        "document_url": expected_document_url,
-        "document_type": expected_document_type,
-        "extracted_data": expected_extracted_data,
-        "status": expected_status,
-    }
+    expected_item = DocumentItem(
+        expected_document_id, expected_document_url, expected_status, expected_document_type, expected_extracted_data
+    )
 
     write_document.update_document(expected_document_url, expected_document_type, expected_extracted_data)
     mock_database.write_document.assert_called_with(expected_item)
