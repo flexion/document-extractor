@@ -10,7 +10,7 @@ interface LayoutProps {
 export default function Layout({
   signOut,
   children,
-}: LayoutProps): JSX.Element {
+}: LayoutProps) {
   return (
     <>
       <Header signOut={signOut} />
