@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Layout from '../components/Layout';
 import { authorizedFetch } from '../utils/api';
 import { useNavigate } from 'react-router';
@@ -7,7 +7,7 @@ interface UploadPageProps {
   signOut: () => Promise<void>;
 }
 
-export default function UploadPage({ signOut }: UploadPageProps): JSX.Element {
+export default function UploadPage({ signOut }: UploadPageProps) {
   // state for alert messages
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<string | null>(null);
