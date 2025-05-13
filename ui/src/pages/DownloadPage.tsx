@@ -8,9 +8,7 @@ interface DownloadPageProps {
   signOut: () => Promise<void>;
 }
 
-export default function DownloadPage({
-  signOut,
-}: DownloadPageProps) {
+export default function DownloadPage({ signOut }: DownloadPageProps) {
   // holds document data
   const [verifiedData] = useState<VerifiedData | null>(() => {
     const storedData = sessionStorage.getItem('verifiedData');

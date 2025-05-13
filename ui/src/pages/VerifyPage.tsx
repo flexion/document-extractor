@@ -11,11 +11,12 @@ interface VerifyPageProps {
 
 interface ResponseData {
   document_id: string;
-  document_key: string;
-  extracted_data: ExtractedData;
-  base64_encoded_file?: string;
   status: string;
-  [key: string]: any;
+  document_key?: string;
+  document_type?: string;
+  extracted_data?: ExtractedData;
+  signed_url?: string;
+  base64_encoded_file?: string;
 }
 
 export default function VerifyPage({ signOut }: VerifyPageProps) {
@@ -111,19 +112,16 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
         const result = await response.json();
         sessionStorage.setItem('verifiedData', JSON.stringify(result));
         navigate('/download-document');
-        //TODO remove alert
         alert('Data saved successfully!');
       } else if (response.status === 401 || response.status === 403) {
         alert('You are no longer signed in!  Please sign in again.');
         signOut();
       } else {
-        //TODO remove alert
         const result = await response.json();
         alert('Failed to save data: ' + result.error);
       }
     } catch (error) {
       console.error('Error submitting data:', error);
-      //TODO remove alert
       alert('An error occurred while saving.');
     }
   }
@@ -211,7 +209,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
 
     // get file extension
     const fileExtension =
-      responseData.document_key.split('.').pop()?.toLowerCase() || '';
+      responseData.document_key?.split('.').pop()?.toLowerCase() || '';
 
     const mimeType =
       fileExtension === 'pdf' ? 'application/pdf' : `image/${fileExtension}`;

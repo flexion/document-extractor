@@ -7,10 +7,7 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-export default function Layout({
-  signOut,
-  children,
-}: LayoutProps) {
+export default function Layout({ signOut, children }: LayoutProps) {
   return (
     <>
       <Header signOut={signOut} />
