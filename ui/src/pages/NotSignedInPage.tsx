@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router';
 
-export default function NotSignedInPage(): JSX.Element {
+export default function NotSignedInPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,7 +12,7 @@ export default function NotSignedInPage(): JSX.Element {
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, [navigate]); // Added navigate to dependency array to avoid lint warnings
+  }, [navigate]);
 
   return (
     <Layout>
