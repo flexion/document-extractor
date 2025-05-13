@@ -3,16 +3,26 @@ export interface NewDocumentResponse {
   documentId: string;
 }
 
-export interface FieldData {
-  value?: string;
-  confidence?: string;
+export interface GetDocumentResponse {
+  document_id: string;
+  status: string;
+  document_key?: string;
+  document_type?: string;
+  extracted_data?: ExtractedData;
+  signed_url?: string;
+  base64_encoded_file?: string;
 }
 
 export interface ExtractedData {
   [key: string]: FieldData;
 }
 
-export interface VerifiedData {
+export interface FieldData {
+  value?: string;
+  confidence?: string;
+}
+
+export interface UpdateDocumentResponse {
   extracted_data?: ExtractedData;
   [key: string]: unknown;
 }

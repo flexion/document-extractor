@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Layout from '../components/Layout';
 import { generateCsvData } from '../utils/downloadPageController';
-import { VerifiedData } from '../utils/api';
+import { UpdateDocumentResponse } from '../utils/api';
 
 // Define interfaces for the component props
 interface DownloadPageProps {
@@ -10,7 +10,7 @@ interface DownloadPageProps {
 
 export default function DownloadPage({ signOut }: DownloadPageProps) {
   // holds document data
-  const [verifiedData] = useState<VerifiedData | null>(() => {
+  const [verifiedData] = useState<UpdateDocumentResponse | null>(() => {
     const storedData = sessionStorage.getItem('verifiedData');
     return storedData ? JSON.parse(storedData)?.updated_document : null;
   });

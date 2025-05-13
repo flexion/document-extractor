@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import {
   authorizedFetch,
-  ExtractedData,
   FieldData,
-  VerifiedData,
+  GetDocumentResponse,
+  UpdateDocumentResponse,
 } from '../utils/api';
 import { useNavigate } from 'react-router';
 import { shouldUseTextarea } from '../utils/formUtils';
@@ -13,21 +13,13 @@ interface VerifyPageProps {
   signOut: () => Promise<void>;
 }
 
-interface ResponseData {
-  document_id: string;
-  status: string;
-  document_key?: string;
-  document_type?: string;
-  extracted_data?: ExtractedData;
-  signed_url?: string;
-  base64_encoded_file?: string;
-}
-
 export default function VerifyPage({ signOut }: VerifyPageProps) {
   const [documentId] = useState<string | null>(() =>
     sessionStorage.getItem('documentId')
   );
-  const [responseData, setResponseData] = useState<ResponseData | null>(null); // API response
+  const [responseData, setResponseData] = useState<GetDocumentResponse | null>(
+    null
+  ); // API response
   const [loading, setLoading] = useState<boolean>(true); // tracks if page is loading
   const [error, setError] = useState<boolean>(false); // tracks when there is an error
 
@@ -63,7 +55,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
           continue;
         }
 
-        const result = (await response.json()) as ResponseData; // parse response
+        const result = (await response.json()) as GetDocumentResponse; // parse response
 
         if (result.status !== 'complete') {
           console.info(
@@ -113,7 +105,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
       });
 
       if (response.ok) {
-        const result = (await response.json()) as VerifiedData;
+        const result = (await response.json()) as UpdateDocumentResponse;
         sessionStorage.setItem('verifiedData', JSON.stringify(result));
         navigate('/download-document');
         alert('Data saved successfully!');
