@@ -10,14 +10,14 @@ interface DownloadPageProps {
 
 export default function DownloadPage({
   signOut,
-}: DownloadPageProps): JSX.Element {
+}: DownloadPageProps) {
   // holds document data
   const [verifiedData] = useState<VerifiedData | null>(() => {
     const storedData = sessionStorage.getItem('verifiedData');
     return storedData ? JSON.parse(storedData)?.updated_document : null;
   });
 
-  function displayPreviewTable(): JSX.Element {
+  function displayPreviewTable() {
     if (!verifiedData || !verifiedData?.extracted_data) {
       return <p>No extracted data available</p>;
     }
