@@ -8,16 +8,16 @@ interface DownloadPageProps {
 }
 
 export default function DownloadPage({ signOut }: DownloadPageProps) {
-  // holds document data
-  const [verifiedData] = useState<UpdateDocumentResponse | null>(() => {
+  const [verifiedData] = useState<UpdateDocumentResponse>(() => {
     const storedData = sessionStorage.getItem('verifiedData');
-    return storedData ? JSON.parse(storedData)?.updated_document : null;
+    return storedData ? JSON.parse(storedData)?.updated_document : {};
   });
 
   function displayPreviewTable() {
-    if (!verifiedData || !verifiedData?.extracted_data) {
+    if (!verifiedData.extracted_data) {
       return <p>No extracted data available</p>;
     }
+
     return (
       <table className="usa-table">
         <thead>
@@ -28,7 +28,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
           </tr>
         </thead>
         <tbody>
-          {Object.entries(verifiedData?.extracted_data)
+          {Object.entries(verifiedData.extracted_data)
             .sort(([keyA], [keyB]) =>
               keyA.localeCompare(keyB, undefined, { numeric: true })
             )
@@ -51,7 +51,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
   }
 
   function downloadCSV() {
-    if (!verifiedData || !verifiedData.extracted_data) {
+    if (!verifiedData.extracted_data) {
       console.error('No data available for CSV download');
       return;
     }
@@ -62,10 +62,11 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
   }
 
   function downloadJSON() {
-    if (!verifiedData || !verifiedData.extracted_data) {
+    if (!verifiedData.extracted_data) {
       console.error('No data available for JSON download');
       return;
     }
+
     const jsonContent = JSON.stringify(verifiedData, null, 2);
 
     downloadData(jsonContent, 'application/json', 'document.json');
@@ -91,13 +92,9 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
     }
   }
 
-  function handleDownloadSubmit(event: React.FormEvent<HTMLFormElement>): void {
+  function handleDownloadSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!verifiedData) {
-      console.error('No document available for download');
-      return;
-    }
     // get the selected file type (CSV or JSON) from the radio buttons
     const selectedElement = document.querySelector(
       "input[name='download-file-type']:checked"
@@ -115,7 +112,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
       return;
     }
 
-    // download function based on selected file type
+    // download function based on the selected file type
     if (fileType === 'csv') {
       downloadCSV();
     } else {
@@ -126,7 +123,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
   return (
     <Layout signOut={signOut}>
       <div className="grid-container margin-bottom-15">
-        {/* Start step indicator section  */}
+        {/* Start of the step indicator section  */}
         <div
           className="usa-step-indicator usa-step-indicator--counters margin-top-2 margin-bottom-6"
           aria-label="Document processing steps"
@@ -158,7 +155,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
         {/* End step indicator section  */}
         <form onSubmit={handleDownloadSubmit}>
           <h1>Download document</h1>
-          {/* Start card section  */}
+          {/* Start of the card section  */}
           <ul className="usa-card-group">
             <li className="usa-card tablet:grid-col-6 widescreen:grid-col-4">
               <div className="usa-card__container">
@@ -168,7 +165,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
                   </h2>
                 </div>
                 <div className="usa-card__body">
-                  {/* Start radio button section  */}
+                  {/* Start of the radio button section  */}
                   <fieldset className="usa-fieldset">
                     <legend className="usa-legend usa-legend">
                       File type is
