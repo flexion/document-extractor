@@ -1,3 +1,8 @@
+export interface NewDocumentResponse {
+  message: string;
+  documentId: string;
+}
+
 export interface FieldData {
   value?: string;
   confidence?: string;

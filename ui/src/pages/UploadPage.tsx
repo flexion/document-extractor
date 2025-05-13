@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Layout from '../components/Layout';
-import { authorizedFetch } from '../utils/api';
+import { authorizedFetch, NewDocumentResponse } from '../utils/api';
 import { useNavigate } from 'react-router';
 
 interface UploadPageProps {
@@ -53,7 +53,7 @@ export default function UploadPage({ signOut }: UploadPageProps) {
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const data = (await response.json()) as NewDocumentResponse;
           sessionStorage.setItem('documentId', data.documentId);
           showAlert('File uploaded successfully!', 'success');
           navigate('/verify-document');
