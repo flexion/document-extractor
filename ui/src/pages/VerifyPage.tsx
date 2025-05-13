@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { authorizedFetch } from '../utils/api';
 import { useNavigate } from 'react-router';
@@ -139,10 +139,9 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
   }, []); // runs only once when the component mounts
 
   function displayFileName(): string {
-    const fileName = responseData?.document_key
+    return responseData?.document_key
       ? responseData?.document_key.replace('input/', '')
       : ' ';
-    return fileName;
   }
 
   function handleInputChange(
@@ -163,7 +162,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
     });
   }
 
-  function displayExtractedData(): JSX.Element[] | undefined {
+  function displayExtractedData() {
     if (!responseData?.extracted_data) {
       console.warn('No extracted data found.');
       return;
@@ -207,7 +206,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
       });
   }
 
-  function displayFilePreview(): JSX.Element | null {
+  function displayFilePreview() {
     if (!responseData || !responseData.base64_encoded_file) return null;
 
     // get file extension
@@ -239,7 +238,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
     );
   }
 
-  function displayStatusMessage(): JSX.Element | undefined {
+  function displayStatusMessage() {
     if (loading) {
       return (
         <div className="loading-overlay">
