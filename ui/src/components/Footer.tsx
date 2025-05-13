@@ -1,6 +1,6 @@
 import logo from 'url:../assets/GSA-logo.svg';
 
-export default function Footer(): JSX.Element {
+export default function Footer() {
   return (
     <footer>
       <div className="usa-identifier">
