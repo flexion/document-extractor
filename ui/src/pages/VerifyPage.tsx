@@ -25,7 +25,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
 
   const navigate = useNavigate();
 
-  async function pollApiRequest(attempts = 30, delay = 2000): Promise<void> {
+  async function pollApiRequest(attempts = 30, delay = 2000) {
     // Helper function to sleep for the specified delay
     const sleep = () => new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -80,9 +80,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
     setError(true);
   }
 
-  async function handleVerifySubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  async function handleVerifySubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!responseData || !responseData.extracted_data) {
@@ -142,7 +140,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     key: string,
     field: FieldData
-  ): void {
+  ) {
     setResponseData((prevData) => {
       if (!prevData) return null;
 

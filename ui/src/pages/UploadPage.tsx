@@ -15,15 +15,13 @@ export default function UploadPage({ signOut }: UploadPageProps) {
 
   const navigate = useNavigate();
 
-  function showAlert(message: string, type: string): void {
+  function showAlert(message: string, type: string) {
     setAlertMessage(message);
     setAlertType(type);
   }
 
   // handle form submission
-  async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const file = fileInputRef.current?.files?.[0];
@@ -37,7 +35,7 @@ export default function UploadPage({ signOut }: UploadPageProps) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
-    reader.onload = async function (): Promise<void> {
+    reader.onload = async function () {
       const base64Result = reader.result as string;
       const base64File = base64Result.split(',')[1];
       const requestBody = {

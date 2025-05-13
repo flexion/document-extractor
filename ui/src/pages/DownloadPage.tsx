@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { generateCsvData } from '../utils/downloadPageController';
 import { UpdateDocumentResponse } from '../utils/api';
 
-// Define interfaces for the component props
 interface DownloadPageProps {
   signOut: () => Promise<void>;
 }
@@ -51,7 +50,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
     );
   }
 
-  function downloadCSV(): void {
+  function downloadCSV() {
     if (!verifiedData || !verifiedData.extracted_data) {
       console.error('No data available for CSV download');
       return;
@@ -62,7 +61,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
     downloadData(csvContent, 'text/csv', 'document.csv');
   }
 
-  function downloadJSON(): void {
+  function downloadJSON() {
     if (!verifiedData || !verifiedData.extracted_data) {
       console.error('No data available for JSON download');
       return;
@@ -76,7 +75,7 @@ export default function DownloadPage({ signOut }: DownloadPageProps) {
     content: string,
     contentType: string,
     filename: string
-  ): Promise<void> {
+  ) {
     const blob = new Blob([content], { type: contentType });
     const url = URL.createObjectURL(blob);
 
