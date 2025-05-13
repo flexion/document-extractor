@@ -7,15 +7,17 @@ interface UploadPageProps {
   signOut: () => Promise<void>;
 }
 
+type AlertType = 'error' | 'success';
+
 export default function UploadPage({ signOut }: UploadPageProps) {
   // state for alert messages
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const [alertType, setAlertType] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState<string>('');
+  const [alertType, setAlertType] = useState<AlertType>('success');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
 
-  function showAlert(message: string, type: string) {
+  function showAlert(message: string, type: AlertType) {
     setAlertMessage(message);
     setAlertType(type);
   }
@@ -31,7 +33,7 @@ export default function UploadPage({ signOut }: UploadPageProps) {
       return;
     }
 
-    // read file as Base64
+    // read the file as Base64
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
@@ -76,7 +78,7 @@ export default function UploadPage({ signOut }: UploadPageProps) {
   return (
     <Layout signOut={signOut}>
       <div className="site-wrapper grid-container padding-bottom-15">
-        {/* Start alert section */}
+        {/* Start of the alert section */}
         {alertMessage && (
           <div
             className={`usa-alert usa-alert--${alertType} usa-alert--no-icon`}
@@ -87,7 +89,7 @@ export default function UploadPage({ signOut }: UploadPageProps) {
           </div>
         )}
         {/* End alert section */}
-        {/* Start step indicator section */}
+        {/* Start of the step indicator section */}
         <div
           className="usa-step-indicator usa-step-indicator--counters margin-bottom-6"
           aria-label="Document processing steps"
@@ -120,7 +122,7 @@ export default function UploadPage({ signOut }: UploadPageProps) {
         {/* End step indicator section */}
         <h1 className="font-ui-xl margin-bottom-2">Upload documents</h1>
         <form id="upload-form" onSubmit={handleSubmit}>
-          {/* Start card section */}
+          {/* Start of the card section */}
           <ul className="usa-card-group">
             <li className="usa-card tablet:grid-col-6 widescreen:grid-col-4">
               <div className="usa-card__container">
@@ -130,7 +132,7 @@ export default function UploadPage({ signOut }: UploadPageProps) {
                   </h2>
                 </div>
                 <div className="usa-card__body">
-                  {/* Start file input section */}
+                  {/* Start of the file input section */}
                   <div className="usa-form-group">
                     <span className="usa-hint" id="file-input-specific-hint">
                       Files must be under 4 MB
