@@ -11,7 +11,7 @@ interface SignInPageProps {
 export default function SignInPage({
   setAuthToken,
   justSignedOut,
-}: SignInPageProps): JSX.Element {
+}: SignInPageProps) {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [usernameError, setUsernameError] = useState<string>('');
