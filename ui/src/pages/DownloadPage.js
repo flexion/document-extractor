@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Layout from '../components/Layout';
+import { generateCsvData } from '../utils/downloadPageController';
 
 export default function DownloadPage({ signOut }) {
   // holds document data
@@ -49,25 +50,10 @@ export default function DownloadPage({ signOut }) {
       console.error('No data available for CSV download');
       return;
     }
-    let csvContent = 'data:text/csv;charset=utf-8,Field,Value\n';
 
-    const sortedEntries = Object.entries(verifiedData.extracted_data).sort(
-      ([keyA], [keyB]) => keyA.localeCompare(keyB, undefined, { numeric: true })
-    );
+    const csvContent = generateCsvData(verifiedData.extracted_data);
 
-    // Construct CSV content
-    sortedEntries.forEach(([key, field]) => {
-      let value = field.value !== undefined ? `"${field.value}"` : '""';
-      csvContent += `"${key}",${value}\n`;
-    });
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'document.csv');
-    document.body.appendChild(link);
-    link.click();
+    downloadData(csvContent, 'text/csv', 'document.csv');
   }
 
   function downloadJSON() {
@@ -76,17 +62,29 @@ export default function DownloadPage({ signOut }) {
       return;
     }
     const jsonContent = JSON.stringify(verifiedData, null, 2);
-    const blob = new Blob([jsonContent], { type: 'application/json' });
+
+    downloadData(jsonContent, 'application/json', 'document.json');
+  }
+
+  async function downloadData(content, contentType, filename) {
+    const blob = new Blob([content], { type: contentType });
     const url = URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'document.json';
-    link.click();
+    try {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+    } finally {
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000); // Small delay to ensure download starts
+    }
   }
 
   function handleDownloadSubmit(event) {
     event.preventDefault();
+
     if (!verifiedData) {
       console.error('No document available for download');
       return;
@@ -100,16 +98,12 @@ export default function DownloadPage({ signOut }) {
       console.error('No file type selected');
       return;
     }
-    // Extract the original filename, remove 'input/
-    let originalFilename = verifiedData.document_key
-      ? verifiedData.document_key.replace(/^input\//, '')
-      : 'document_data';
 
     // download function based on selected file type
     if (fileType === 'csv') {
-      downloadCSV(verifiedData, originalFilename);
+      downloadCSV();
     } else {
-      downloadJSON(verifiedData, originalFilename);
+      downloadJSON();
     }
   }
 
