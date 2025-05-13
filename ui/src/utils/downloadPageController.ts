@@ -1,4 +1,4 @@
-import { ExtractedData } from './types';
+import { ExtractedData } from './api';
 
 export function generateCsvData(extractedData: ExtractedData): string {
   let csvData = 'Field,Value\n';

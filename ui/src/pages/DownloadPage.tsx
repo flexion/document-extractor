@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Layout from '../components/Layout';
 import { generateCsvData } from '../utils/downloadPageController';
-import { VerifiedData } from '../utils/types';
+import { VerifiedData } from '../utils/api';
 
 // Define interfaces for the component props
 interface DownloadPageProps {

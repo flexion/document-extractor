@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
-import { authorizedFetch } from '../utils/api';
+import {
+  authorizedFetch,
+  ExtractedData,
+  FieldData,
+  VerifiedData,
+} from '../utils/api';
 import { useNavigate } from 'react-router';
 import { shouldUseTextarea } from '../utils/formUtils';
-import { ExtractedData, FieldData } from '../utils/types';
 
 interface VerifyPageProps {
   signOut: () => Promise<void>;
@@ -109,7 +113,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        const result = (await response.json()) as VerifiedData;
         sessionStorage.setItem('verifiedData', JSON.stringify(result));
         navigate('/download-document');
         alert('Data saved successfully!');

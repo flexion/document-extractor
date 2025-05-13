@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { generateCsvData } from './downloadPageController';
-import { ExtractedData } from './types';
+import { ExtractedData } from './api';
 
 const extractedData: ExtractedData = {
   bKey: { value: 'DogCow' },
