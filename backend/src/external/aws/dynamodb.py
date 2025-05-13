@@ -6,6 +6,7 @@ import boto3
 from boto3.dynamodb.types import TypeDeserializer, TypeSerializer
 from types_boto3_dynamodb import DynamoDBClient
 
+from src.database.data.document_item import DocumentItem
 from src.database.database import Database
 from src.database.exception import DatabaseException
 
@@ -17,20 +18,20 @@ class DynamoDb(Database):
         self.deserializer = TypeDeserializer()
         self.serializer = TypeSerializer()
 
-    def get_document(self, document_id: str) -> dict[str, Any] | None:
+    def get_document(self, document_id: str) -> DocumentItem | None:
         try:
             dynamodb_item = self.dynamodb_client.get_item(TableName=self.table, Key={"document_id": {"S": document_id}})
 
             if "Item" not in dynamodb_item:
                 return None
-
-            return self._unmarshal_dynamodb_json(dynamodb_item["Item"])
+            unmarshalled_item = self._unmarshal_dynamodb_json(dynamodb_item["Item"])
+            return DocumentItem(**unmarshalled_item)
         except Exception as e:
             raise DatabaseException(f"Failed to get the document {document_id}") from e
 
-    def write_document(self, document: dict[str, Any]):
+    def write_document(self, document: DocumentItem):
         try:
-            dynamodb_item = self._marshal_dynamodb_json(document)
+            dynamodb_item = self._marshal_dynamodb_json(document.to_dict())
             self.dynamodb_client.put_item(TableName=self.table, Item=dynamodb_item)
         except Exception as e:
             raise DatabaseException("Failed to write the document") from e
