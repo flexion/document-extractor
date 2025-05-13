@@ -19,8 +19,8 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
   );
   const [responseData, setResponseData] = useState<GetDocumentResponse | null>(
     null
-  ); // API response
-  const [loading, setLoading] = useState<boolean>(true); // tracks if page is loading
+  );
+  const [loading, setLoading] = useState<boolean>(true); // tracks if the page is loading
   const [error, setError] = useState<boolean>(false); // tracks when there is an error
 
   const navigate = useNavigate();
