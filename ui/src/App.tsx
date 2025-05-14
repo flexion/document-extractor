@@ -7,15 +7,15 @@ import SignInPage from './pages/SignInPage';
 import { useEffect, useState } from 'react';
 
 export default function App() {
-  const [authToken, setAuthToken] = useState(() => {
+  const [authToken, setAuthToken] = useState<string>(() => {
     return sessionStorage.getItem('auth_token') || '';
   });
 
-  const [justSignedOut, setJustSignedOut] = useState(false);
+  const [justSignedOut, setJustSignedOut] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  async function signOut() {
+  async function signOut(): Promise<void> {
     setAuthToken('');
     setJustSignedOut(true);
     navigate('/');

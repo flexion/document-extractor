@@ -1,38 +1,45 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Layout from '../components/Layout';
-import { authorizedFetch } from '../utils/api';
+import { authorizedFetch, NewDocumentResponse } from '../utils/api';
 import { useNavigate } from 'react-router';
 
-export default function UploadPage({ signOut }) {
+interface UploadPageProps {
+  signOut: () => Promise<void>;
+}
+
+type AlertType = 'error' | 'success';
+
+export default function UploadPage({ signOut }: UploadPageProps) {
   // state for alert messages
-  const [alertMessage, setAlertMessage] = useState(null);
-  const [alertType, setAlertType] = useState(null);
-  const fileInputRef = useRef(null);
+  const [alertMessage, setAlertMessage] = useState<string>('');
+  const [alertType, setAlertType] = useState<AlertType>('success');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
 
-  function showAlert(message, type) {
+  function showAlert(message: string, type: AlertType) {
     setAlertMessage(message);
     setAlertType(type);
   }
 
   // handle form submission
-  async function handleSubmit(event) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const file = fileInputRef.current?.files[0];
+    const file = fileInputRef.current?.files?.[0];
 
     if (!file) {
       showAlert('Please select a file to upload!', 'error');
       return;
     }
 
-    // read file as Base64
+    // read the file as Base64
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
     reader.onload = async function () {
-      const base64File = reader.result.split(',')[1];
+      const base64Result = reader.result as string;
+      const base64File = base64Result.split(',')[1];
       const requestBody = {
         file_content: base64File,
         file_name: file.name,
@@ -46,9 +53,9 @@ export default function UploadPage({ signOut }) {
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const data = (await response.json()) as NewDocumentResponse;
           sessionStorage.setItem('documentId', data.documentId);
-          showAlert('File uploaded successfully!', 'success, fake id', data.id);
+          showAlert('File uploaded successfully!', 'success');
           navigate('/verify-document');
         } else if (response.status === 401 || response.status === 403) {
           showAlert(
@@ -71,7 +78,7 @@ export default function UploadPage({ signOut }) {
   return (
     <Layout signOut={signOut}>
       <div className="site-wrapper grid-container padding-bottom-15">
-        {/* Start alert section */}
+        {/* Start of the alert section */}
         {alertMessage && (
           <div
             className={`usa-alert usa-alert--${alertType} usa-alert--no-icon`}
@@ -82,7 +89,7 @@ export default function UploadPage({ signOut }) {
           </div>
         )}
         {/* End alert section */}
-        {/* Start step indicator section */}
+        {/* Start of the step indicator section */}
         <div
           className="usa-step-indicator usa-step-indicator--counters margin-bottom-6"
           aria-label="Document processing steps"
@@ -115,7 +122,7 @@ export default function UploadPage({ signOut }) {
         {/* End step indicator section */}
         <h1 className="font-ui-xl margin-bottom-2">Upload documents</h1>
         <form id="upload-form" onSubmit={handleSubmit}>
-          {/* Start card section */}
+          {/* Start of the card section */}
           <ul className="usa-card-group">
             <li className="usa-card tablet:grid-col-6 widescreen:grid-col-4">
               <div className="usa-card__container">
@@ -125,7 +132,7 @@ export default function UploadPage({ signOut }) {
                   </h2>
                 </div>
                 <div className="usa-card__body">
-                  {/* Start file input section */}
+                  {/* Start of the file input section */}
                   <div className="usa-form-group">
                     <span className="usa-hint" id="file-input-specific-hint">
                       Files must be under 4 MB

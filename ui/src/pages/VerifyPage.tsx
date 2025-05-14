@@ -1,20 +1,40 @@
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
-import { authorizedFetch } from '../utils/api';
+import {
+  authorizedFetch,
+  FieldData,
+  GetDocumentResponse,
+  UpdateDocumentResponse,
+} from '../utils/api';
 import { useNavigate } from 'react-router';
 import { shouldUseTextarea } from '../utils/formUtils';
 
-export default function VerifyPage({ signOut }) {
-  const [documentId] = useState(() => sessionStorage.getItem('documentId'));
-  const [responseData, setResponseData] = useState(null); // API response
-  const [loading, setLoading] = useState(true); // tracks if page is loading
-  const [error, setError] = useState(false); // tracks when there is an error
+interface VerifyPageProps {
+  signOut: () => Promise<void>;
+}
+
+export default function VerifyPage({ signOut }: VerifyPageProps) {
+  const [documentId] = useState<string | null>(() =>
+    sessionStorage.getItem('documentId')
+  );
+  const [responseData, setResponseData] = useState<GetDocumentResponse | null>(
+    null
+  );
+  const [loading, setLoading] = useState<boolean>(true); // tracks if the page is loading
+  const [error, setError] = useState<boolean>(false); // tracks when there is an error
 
   const navigate = useNavigate();
 
   async function pollApiRequest(attempts = 30, delay = 2000) {
     // Helper function to sleep for the specified delay
     const sleep = () => new Promise((resolve) => setTimeout(resolve, delay));
+
+    if (!documentId) {
+      console.error('No documentId available for API request');
+      setLoading(false);
+      setError(true);
+      return;
+    }
 
     for (let i = 0; i < attempts; i++) {
       try {
@@ -35,7 +55,7 @@ export default function VerifyPage({ signOut }) {
           continue;
         }
 
-        const result = await response.json(); // parse response
+        const result = (await response.json()) as GetDocumentResponse; // parse response
 
         if (result.status !== 'complete') {
           console.info(
@@ -60,12 +80,14 @@ export default function VerifyPage({ signOut }) {
     setError(true);
   }
 
-  async function handleVerifySubmit(event) {
+  async function handleVerifySubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!responseData || !responseData.extracted_data) {
       console.log('no extracted data available');
+      return;
     }
+
     const formData = {
       extracted_data: responseData.extracted_data,
     };
@@ -81,22 +103,19 @@ export default function VerifyPage({ signOut }) {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        const result = (await response.json()) as UpdateDocumentResponse;
         sessionStorage.setItem('verifiedData', JSON.stringify(result));
         navigate('/download-document');
-        //TODO remove alert
         alert('Data saved successfully!');
       } else if (response.status === 401 || response.status === 403) {
         alert('You are no longer signed in!  Please sign in again.');
         signOut();
       } else {
-        //TODO remove alert
         const result = await response.json();
         alert('Failed to save data: ' + result.error);
       }
     } catch (error) {
       console.error('Error submitting data:', error);
-      //TODO remove alert
       alert('An error occurred while saving.');
     }
   }
@@ -111,21 +130,28 @@ export default function VerifyPage({ signOut }) {
     pollApiRequest();
   }, []); // runs only once when the component mounts
 
-  function displayFileName() {
-    const fileName = responseData?.document_key
+  function displayFileName(): string {
+    return responseData?.document_key
       ? responseData?.document_key.replace('input/', '')
       : ' ';
-    return fileName;
   }
 
-  function handleInputChange(event, key, field) {
-    setResponseData((prevData) => ({
-      ...prevData, // keep previous data
-      extracted_data: {
-        ...prevData.extracted_data, // keep other fields the same
-        [key]: { ...field, value: event.target.value },
-      },
-    }));
+  function handleInputChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    key: string,
+    field: FieldData
+  ) {
+    setResponseData((prevData) => {
+      if (!prevData) return null;
+
+      return {
+        ...prevData, // keep previous data
+        extracted_data: {
+          ...prevData.extracted_data, // keep other fields the same
+          [key]: { ...field, value: event.target.value },
+        },
+      };
+    });
   }
 
   function displayExtractedData() {
@@ -133,6 +159,7 @@ export default function VerifyPage({ signOut }) {
       console.warn('No extracted data found.');
       return;
     }
+
     return Object.entries(responseData.extracted_data)
       .sort(([keyA], [keyB]) =>
         keyA.localeCompare(keyB, undefined, { numeric: true })
@@ -144,7 +171,7 @@ export default function VerifyPage({ signOut }) {
               {key}{' '}
               <span className="text-accent-cool-darker display-inline-block width-full padding-top-2px">
                 {field.confidence
-                  ? `(Confidence ${field?.confidence.toFixed(2)})`
+                  ? `(Confidence ${parseFloat(field.confidence).toFixed(2)})`
                   : 'Confidence'}
               </span>
             </label>
@@ -175,10 +202,9 @@ export default function VerifyPage({ signOut }) {
     if (!responseData || !responseData.base64_encoded_file) return null;
 
     // get file extension
-    const fileExtension = responseData.document_key
-      .split('.')
-      .pop()
-      .toLowerCase();
+    const fileExtension =
+      responseData.document_key?.split('.').pop()?.toLowerCase() || '';
+
     const mimeType =
       fileExtension === 'pdf' ? 'application/pdf' : `image/${fileExtension}`;
     // Base64 URL to display image

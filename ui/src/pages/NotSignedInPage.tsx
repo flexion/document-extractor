@@ -12,7 +12,7 @@ export default function NotSignedInPage() {
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [navigate]);
 
   return (
     <Layout>

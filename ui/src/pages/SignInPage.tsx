@@ -1,19 +1,29 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router';
 
-export default function SignInPage({ setAuthToken, justSignedOut }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [usernameError, setUsernameError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [formError, setFormError] = useState('');
-  const [loading, setLoading] = useState(false);
+interface SignInPageProps {
+  setAuthToken: (token: string) => void;
+  justSignedOut: boolean;
+}
+
+export default function SignInPage({
+  setAuthToken,
+  justSignedOut,
+}: SignInPageProps) {
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [usernameError, setUsernameError] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
+  const [formError, setFormError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  async function handleLogin(e) {
+  async function handleLogin(
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> {
     e.preventDefault();
     // clear previous error messages:
     setUsernameError('');
@@ -46,7 +56,7 @@ export default function SignInPage({ setAuthToken, justSignedOut }) {
       });
 
       if (!res.ok) {
-        throw new Error('The email or password you’ve entered is wrong.');
+        throw new Error("The email or password you've entered is wrong.");
       }
 
       const data = await res.json();
@@ -56,7 +66,11 @@ export default function SignInPage({ setAuthToken, justSignedOut }) {
       // redirect to upload page
       navigate('/upload-document');
     } catch (err) {
-      setFormError(err.message);
+      if (err instanceof Error) {
+        setFormError(err.message);
+      } else {
+        setFormError('An unexpected error occurred');
+      }
     } finally {
       setLoading(false); // remove spinner in all cases after request finishes
     }
@@ -109,7 +123,9 @@ export default function SignInPage({ setAuthToken, justSignedOut }) {
                 id="username"
                 name="username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setUsername(e.target.value)
+                }
               />
             </div>
 
@@ -127,7 +143,9 @@ export default function SignInPage({ setAuthToken, justSignedOut }) {
                 id="password"
                 name="password"
                 type="password"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
               />
             </div>
             <button

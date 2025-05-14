@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { generateCsvData } from '../utils/downloadPageController';
+import { UpdateDocumentResponse } from '../utils/api';
 
-export default function DownloadPage({ signOut }) {
-  // holds document data
-  const [verifiedData] = useState(() => {
+interface DownloadPageProps {
+  signOut: () => Promise<void>;
+}
+
+export default function DownloadPage({ signOut }: DownloadPageProps) {
+  const [verifiedData] = useState<UpdateDocumentResponse>(() => {
     const storedData = sessionStorage.getItem('verifiedData');
-    return storedData ? JSON.parse(storedData)?.updated_document : null;
+    return storedData ? JSON.parse(storedData)?.updated_document : {};
   });
 
   function displayPreviewTable() {
-    if (!verifiedData || !verifiedData?.extracted_data) {
+    if (!verifiedData.extracted_data) {
       return <p>No extracted data available</p>;
     }
+
     return (
       <table className="usa-table">
         <thead>
@@ -23,7 +28,7 @@ export default function DownloadPage({ signOut }) {
           </tr>
         </thead>
         <tbody>
-          {Object.entries(verifiedData?.extracted_data)
+          {Object.entries(verifiedData.extracted_data)
             .sort(([keyA], [keyB]) =>
               keyA.localeCompare(keyB, undefined, { numeric: true })
             )
@@ -46,7 +51,7 @@ export default function DownloadPage({ signOut }) {
   }
 
   function downloadCSV() {
-    if (!verifiedData || !verifiedData.extracted_data) {
+    if (!verifiedData.extracted_data) {
       console.error('No data available for CSV download');
       return;
     }
@@ -57,16 +62,21 @@ export default function DownloadPage({ signOut }) {
   }
 
   function downloadJSON() {
-    if (!verifiedData || !verifiedData.extracted_data) {
+    if (!verifiedData.extracted_data) {
       console.error('No data available for JSON download');
       return;
     }
+
     const jsonContent = JSON.stringify(verifiedData, null, 2);
 
     downloadData(jsonContent, 'application/json', 'document.json');
   }
 
-  async function downloadData(content, contentType, filename) {
+  async function downloadData(
+    content: string,
+    contentType: string,
+    filename: string
+  ) {
     const blob = new Blob([content], { type: contentType });
     const url = URL.createObjectURL(blob);
 
@@ -82,24 +92,27 @@ export default function DownloadPage({ signOut }) {
     }
   }
 
-  function handleDownloadSubmit(event) {
+  function handleDownloadSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!verifiedData) {
-      console.error('No document available for download');
+    // get the selected file type (CSV or JSON) from the radio buttons
+    const selectedElement = document.querySelector(
+      "input[name='download-file-type']:checked"
+    ) as HTMLInputElement | null;
+
+    if (!selectedElement) {
+      console.error('No file type selected');
       return;
     }
-    // get the selected file type (CSV or JSON) from the radio buttons
-    const fileType = document.querySelector(
-      "input[name='download-file-type']:checked"
-    ).value;
+
+    const fileType = selectedElement.value;
 
     if (!fileType) {
       console.error('No file type selected');
       return;
     }
 
-    // download function based on selected file type
+    // download function based on the selected file type
     if (fileType === 'csv') {
       downloadCSV();
     } else {
@@ -110,7 +123,7 @@ export default function DownloadPage({ signOut }) {
   return (
     <Layout signOut={signOut}>
       <div className="grid-container margin-bottom-15">
-        {/* Start step indicator section  */}
+        {/* Start of the step indicator section  */}
         <div
           className="usa-step-indicator usa-step-indicator--counters margin-top-2 margin-bottom-6"
           aria-label="Document processing steps"
@@ -142,7 +155,7 @@ export default function DownloadPage({ signOut }) {
         {/* End step indicator section  */}
         <form onSubmit={handleDownloadSubmit}>
           <h1>Download document</h1>
-          {/* Start card section  */}
+          {/* Start of the card section  */}
           <ul className="usa-card-group">
             <li className="usa-card tablet:grid-col-6 widescreen:grid-col-4">
               <div className="usa-card__container">
@@ -152,7 +165,7 @@ export default function DownloadPage({ signOut }) {
                   </h2>
                 </div>
                 <div className="usa-card__body">
-                  {/* Start radio button section  */}
+                  {/* Start of the radio button section  */}
                   <fieldset className="usa-fieldset">
                     <legend className="usa-legend usa-legend">
                       File type is

@@ -2,7 +2,11 @@ import iconDotGov from 'url:../assets/icon-dot-gov.svg';
 import usFlagSmall from 'url:../assets/us_flag_small.png';
 import iconHttps from 'url:../assets/icon-https.svg';
 
-export default function Headers({ signOut }) {
+interface HeaderProps {
+  signOut?: () => Promise<void>;
+}
+
+export default function Headers({ signOut }: HeaderProps) {
   return (
     <>
       {/* Start banner section */}
@@ -28,7 +32,9 @@ export default function Headers({ signOut }) {
                 <p className="usa-banner__header-text">
                   An official website of the United States government
                 </p>
-                <p className="usa-banner__header-action">Here’s how you know</p>
+                <p className="usa-banner__header-action">
+                  Here&#39;s how you know
+                </p>
               </div>
               <button
                 type="button"
@@ -37,7 +43,7 @@ export default function Headers({ signOut }) {
                 aria-controls="gov-banner-default"
               >
                 <span className="usa-banner__button-text text-white">
-                  Here’s how you know
+                  Here&#39;s how you know
                 </span>
               </button>
             </div>
@@ -98,9 +104,9 @@ export default function Headers({ signOut }) {
                         />
                       </svg>{' '}
                     </span>
-                    ) or <strong>https://</strong> means you’ve safely connected
-                    to the .gov website. Share sensitive information only on
-                    official, secure websites.
+                    ) or <strong>https://</strong> means you&#39;ve safely
+                    connected to the .gov website. Share sensitive information
+                    only on official, secure websites.
                   </p>
                 </div>
               </div>

@@ -6,6 +6,9 @@ import './css/styles.css';
 import { BrowserRouter } from 'react-router';
 
 const container = document.getElementById('app');
+if (!container) {
+  throw new Error('Failed to find the app container element');
+}
 const root = createRoot(container);
 
 root.render(

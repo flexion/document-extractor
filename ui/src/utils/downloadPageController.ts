@@ -1,4 +1,6 @@
-export function generateCsvData(extractedData) {
+import { ExtractedData } from './api';
+
+export function generateCsvData(extractedData: ExtractedData): string {
   let csvData = 'Field,Value\n';
 
   const sortedEntries = Object.entries(extractedData).sort(([keyA], [keyB]) =>

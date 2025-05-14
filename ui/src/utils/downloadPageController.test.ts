@@ -1,8 +1,9 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 import { generateCsvData } from './downloadPageController';
+import { ExtractedData } from './api';
 
-const extractedData = {
+const extractedData: ExtractedData = {
   bKey: { value: 'DogCow' },
   aKey: { value: 'Moof' },
   cKey: { value: undefined },
