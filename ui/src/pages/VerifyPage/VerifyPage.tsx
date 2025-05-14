@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
+import Layout from '../../components/Layout';
 import {
   authorizedFetch,
   FieldData,
   GetDocumentResponse,
   UpdateDocumentResponse,
-} from '../utils/api';
+} from '../../utils/api';
 import { useNavigate } from 'react-router';
-import { shouldUseTextarea } from '../utils/formUtils';
+import { shouldUseTextarea } from '../../utils/formUtils';
 
 interface VerifyPageProps {
   signOut: () => Promise<void>;
