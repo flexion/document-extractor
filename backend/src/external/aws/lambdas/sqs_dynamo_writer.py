@@ -18,9 +18,6 @@ appContext.register(SQSClient, boto3.client("sqs"))
 
 
 def lambda_handler(event, context):
-    failure = False
-    exception_message = "An internal error happened while trying to save a document to the database"
-
     for record in event["Records"]:
         try:
             message_body = json.loads(record["body"])
@@ -34,17 +31,9 @@ def lambda_handler(event, context):
             sqs_client = appContext.implementation(SQSClient)
             sqs_client.delete_message(QueueUrl=sqs_queue_url, ReceiptHandle=record["receiptHandle"])
         except Exception as e:
+            exception_message = "An internal error happened while trying to save a document to the database"
             logging.error(exception_message)
             logging.exception(e)
-            failure = True
+            raise
 
-    if failure:
-        return {
-            "statusCode": 500,
-            "body": json.dumps(exception_message),
-        }
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps("Processing complete"),
-    }
+    logging.info("Process complete")
