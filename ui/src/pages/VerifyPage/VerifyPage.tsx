@@ -9,7 +9,7 @@ interface VerifyPageProps {
 
 export default function VerifyPage({ signOut }: VerifyPageProps) {
   const {
-    responseData,
+    getDocumentResponseData,
     loading,
     error,
     handleVerifySubmit,
@@ -171,13 +171,15 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
                     <div className="usa-card__body">
                       <div id="file-display-container"></div>
                       <div>
-                        {responseData?.base64_encoded_file &&
+                        {getDocumentResponseData?.base64_encoded_file &&
                           displayFilePreview(
-                            responseData.base64_encoded_file,
-                            responseData.document_key
+                            getDocumentResponseData.base64_encoded_file,
+                            getDocumentResponseData.document_key
                           )}
                       </div>
-                      <p>{displayFileName()}</p>
+                      <p>
+                        {displayFileName(getDocumentResponseData?.document_key)}
+                      </p>
                     </div>
                   </div>
                 </li>
@@ -191,8 +193,10 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
                   <li className="usa-card width-full">
                     <div className="usa-card__container verify-col">
                       <div className="usa-card__body overflow-y-scroll minh-mobile-lg maxh-mobile-lg">
-                        {responseData?.extracted_data &&
-                          displayExtractedData(responseData?.extracted_data)}
+                        {getDocumentResponseData?.extracted_data &&
+                          displayExtractedData(
+                            getDocumentResponseData?.extracted_data
+                          )}
                       </div>
                       <div className="usa-card__footer border-top-1px border-base-lighter">
                         <button

@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   authorizedFetch,
+  ExtractedData,
   FieldData,
   GetDocumentResponse,
   UpdateDocumentResponse,
 } from '../../utils/api';
 
 export interface UseVerifyHook {
-  responseData: GetDocumentResponse | null;
+  getDocumentResponseData: GetDocumentResponse | null;
   loading: boolean;
   error: boolean;
   handleVerifySubmit: (
@@ -19,16 +20,15 @@ export interface UseVerifyHook {
     key: string,
     field: FieldData
   ) => void;
-  displayFileName: () => string;
+  displayFileName: (document_key?: string) => string;
 }
 
 export function useVerify(signOut: () => Promise<void>): UseVerifyHook {
   const [documentId] = useState<string | null>(() =>
     sessionStorage.getItem('documentId')
   );
-  const [responseData, setResponseData] = useState<GetDocumentResponse | null>(
-    null
-  );
+  const [getDocumentResponseData, setGetDocumentResponseData] =
+    useState<GetDocumentResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export function useVerify(signOut: () => Promise<void>): UseVerifyHook {
     }
 
     (async () => {
-      const { responseData, failure } = await pollApiRequest(documentId);
+      const { responseData, failure } = await pollGetDocumentApi(documentId);
 
       setLoading(false);
 
@@ -61,44 +61,36 @@ export function useVerify(signOut: () => Promise<void>): UseVerifyHook {
         return;
       }
 
-      setResponseData(responseData);
+      setGetDocumentResponseData(responseData);
     })();
   }, []);
 
   async function handleVerifySubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!responseData || !responseData.extracted_data) {
+    if (!getDocumentResponseData?.extracted_data) {
       console.log('No extracted data available');
       return;
     }
 
-    const formData = { extracted_data: responseData.extracted_data };
+    const { responseData, failure } = await callUpdateDocumentApi(
+      getDocumentResponseData.document_id,
+      getDocumentResponseData.extracted_data
+    );
 
-    try {
-      const apiUrl = `/api/document/${responseData.document_id}`;
-      const response = await authorizedFetch(apiUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const result = (await response.json()) as UpdateDocumentResponse;
-        sessionStorage.setItem('verifiedData', JSON.stringify(result));
-        navigate('/download-document');
-        alert('Data saved successfully!');
-      } else if (response.status === 401 || response.status === 403) {
+    if (failure) {
+      if (failure === 'unauthenticated') {
         alert('You are no longer signed in! Please sign in again.');
-        signOut();
+        await signOut();
       } else {
-        const result = await response.json();
-        alert('Failed to save data: ' + result.error);
+        alert('An error occurred while saving.');
       }
-    } catch (err) {
-      console.error('Error submitting data:', err);
-      alert('An error occurred while saving.');
+      return;
     }
+
+    sessionStorage.setItem('verifiedData', JSON.stringify(responseData));
+    alert('Data saved successfully!');
+    navigate('/download-document');
   }
 
   function handleInputChange(
@@ -106,7 +98,7 @@ export function useVerify(signOut: () => Promise<void>): UseVerifyHook {
     key: string,
     field: FieldData
   ) {
-    setResponseData((prevData) => {
+    setGetDocumentResponseData((prevData) => {
       if (!prevData) return null;
       return {
         ...prevData,
@@ -118,14 +110,8 @@ export function useVerify(signOut: () => Promise<void>): UseVerifyHook {
     });
   }
 
-  function displayFileName(): string {
-    return responseData?.document_key
-      ? responseData.document_key.replace('input/', '')
-      : ' ';
-  }
-
   return {
-    responseData,
+    getDocumentResponseData,
     loading,
     error,
     handleVerifySubmit,
@@ -134,16 +120,20 @@ export function useVerify(signOut: () => Promise<void>): UseVerifyHook {
   };
 }
 
-interface PollApiRequestResponse {
+function displayFileName(document_key?: string): string {
+  return document_key ? document_key.replace('input/', '') : ' ';
+}
+
+interface PollGetDocumentApiResponse {
   responseData?: GetDocumentResponse;
   failure?: 'unauthenticated' | 'timeout';
 }
 
-async function pollApiRequest(
+async function pollGetDocumentApi(
   documentId: string,
   attempts = 30,
   delay = 2000
-): Promise<PollApiRequestResponse> {
+): Promise<PollGetDocumentApiResponse> {
   const sleep = () => new Promise((resolve) => setTimeout(resolve, delay));
 
   for (let retryAttempt = 0; retryAttempt < attempts; retryAttempt++) {
@@ -188,4 +178,44 @@ async function pollApiRequest(
   return {
     failure: 'timeout',
   };
+}
+
+interface CallUpdateDocumentApiResponse {
+  responseData?: UpdateDocumentResponse;
+  failure?: 'unauthenticated' | 'other';
+}
+
+async function callUpdateDocumentApi(
+  document_id: string,
+  extracted_data: ExtractedData
+): Promise<CallUpdateDocumentApiResponse> {
+  try {
+    const apiUrl = `/api/document/${document_id}`;
+    const response = await authorizedFetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(extracted_data),
+    });
+
+    if (response.ok) {
+      const result = (await response.json()) as UpdateDocumentResponse;
+      return {
+        responseData: result,
+      };
+    } else if (response.status === 401 || response.status === 403) {
+      return {
+        failure: 'unauthenticated',
+      };
+    } else {
+      alert('Failed to save data: ' + response.statusText);
+      return {
+        failure: 'other',
+      };
+    }
+  } catch (err) {
+    console.error('Error submitting data:', err);
+    return {
+      failure: 'other',
+    };
+  }
 }
