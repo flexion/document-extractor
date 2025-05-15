@@ -8,7 +8,7 @@ import {
   UpdateDocumentResponse,
 } from '../../utils/api';
 
-export interface UseVerifyHook {
+export interface UseVerifyPageHook {
   getDocumentResponseData: GetDocumentResponse | null;
   loading: boolean;
   error: boolean;
@@ -23,7 +23,7 @@ export interface UseVerifyHook {
   displayFileName: (document_key?: string) => string;
 }
 
-export function useVerify(signOut: () => Promise<void>): UseVerifyHook {
+export function useVerifyPage(signOut: () => Promise<void>): UseVerifyPageHook {
   const [documentId] = useState<string | null>(() =>
     sessionStorage.getItem('documentId')
   );

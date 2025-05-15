@@ -1,7 +1,7 @@
 import Layout from '../../components/Layout';
 import { ExtractedData } from '../../utils/api';
 import { shouldUseTextarea } from '../../utils/formUtils';
-import { useVerify } from './useVerify.ts';
+import { useVerifyPage } from './useVerifyPage.ts';
 
 interface VerifyPageProps {
   signOut: () => Promise<void>;
@@ -15,7 +15,7 @@ export default function VerifyPage({ signOut }: VerifyPageProps) {
     handleVerifySubmit,
     handleInputChange,
     displayFileName,
-  } = useVerify(signOut);
+  } = useVerifyPage(signOut);
 
   function displayFilePreview(
     base64_encoded_file: string,
