@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 
@@ -36,28 +35,16 @@ def lambda_handler(event: events.S3Event, context: lambda_context.Context):
         exception_message = f"Failed to find the file {s3_url}"
         logging.error(exception_message)
         logging.exception(e)
-        return {
-            "statusCode": 500,
-            "body": json.dumps(exception_message),
-        }
+        raise
     except OcrException as e:
         exception_message = f"Failed OCR of {s3_url}"
         logging.error(exception_message)
         logging.exception(e)
-        return {
-            "statusCode": 500,
-            "body": json.dumps(exception_message),
-        }
+        raise
     except Exception as e:
         exception_message = "Failed to send message to queue"
         logging.error(exception_message)
         logging.exception(e)
-        return {
-            "statusCode": 500,
-            "body": json.dumps(exception_message),
-        }
+        raise
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps("Document processed successfully and sent to SQS"),
-    }
+    logging.info("Document processed successfully and sent to SQS")
