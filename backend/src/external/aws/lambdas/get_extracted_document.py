@@ -1,17 +1,19 @@
 import base64
 import json
-import logging
 
 from src import context
 from src.database.database import Database
 from src.documents import get_document
 from src.external.aws.dynamodb import DynamoDb
 from src.external.aws.s3 import S3
+from src.logging_config import setup_logger
 from src.storage import CloudStorage
 
 appContext = context.ApplicationContext()
 appContext.register(CloudStorage, S3())
 appContext.register(Database, DynamoDb())
+
+logger = setup_logger(__name__)
 
 
 def lambda_handler(event, context):
@@ -42,8 +44,8 @@ def lambda_handler(event, context):
         }
     except Exception as e:
         exception_message = f"An internal error happened while trying to get document {document_id}"
-        logging.error(exception_message)
-        logging.exception(e)
+        logger.error(exception_message)
+        logger.exception(e)
         return {
             "statusCode": 500,
             "body": json.dumps(exception_message),

@@ -7,11 +7,14 @@ from src.documents import write_document
 from src.documents.upload_document import upload_file_data
 from src.external.aws.dynamodb import DynamoDb
 from src.external.aws.s3 import S3
+from src.logging_config import setup_logger
 from src.storage import CloudStorage
 
 appContext = context.ApplicationContext()
 appContext.register(CloudStorage, S3())
 appContext.register(Database, DynamoDb())
+
+logger = setup_logger(__name__)
 
 
 def lambda_handler(event, context):

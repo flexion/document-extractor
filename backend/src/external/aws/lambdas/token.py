@@ -1,21 +1,24 @@
 import json
-import logging
 import os
 
 from src import context
 from src.external.aws.secret_manager import SecretManager
+from src.logging_config import setup_logger
 from src.login.login import generate_token, has_valid_credentials
 from src.secret.cloud_secret_manager import CloudSecretManager
 
 appContext = context.ApplicationContext()
 appContext.register(CloudSecretManager, SecretManager())
+
 environment = os.environ["ENVIRONMENT"]
+
+logger = setup_logger(__name__)
 
 
 def lambda_handler(event, context):
-    logging.info("Getting username and password from request body")
+    logger.info("Getting username and password from request body")
     if "body" not in event or "username" not in event["body"] or "password" not in event["body"]:
-        logging.warning("Credentials missing in request body")
+        logger.warning("Credentials missing in request body")
         return {
             "statusCode": 400,
             "body": json.dumps({"error": "No file provided"}),
@@ -26,7 +29,7 @@ def lambda_handler(event, context):
 
     try:
         if not has_valid_credentials(username, password, environment):
-            logging.warning("Invalid credentials")
+            logger.warning("Invalid credentials")
             return {"statusCode": 401, "body": json.dumps({"error": "Invalid credentials"})}
     except Exception as e:
         return {
@@ -36,7 +39,7 @@ def lambda_handler(event, context):
 
     # Create JWT token
     try:
-        logging.info("Generating JWT")
+        logger.info("Generating JWT")
         token = generate_token(username, environment)
     except Exception as e:
         return {
