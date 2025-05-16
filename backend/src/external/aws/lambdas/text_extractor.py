@@ -30,7 +30,6 @@ def lambda_handler(event: events.S3Event, context: lambda_context.Context):
 
     s3_url = f"s3://{bucket_name}/{document_key}"
     logger.info(f"Processing {s3_url}")
-    print(f"Printer Processing {s3_url}")
 
     try:
         extract_text.extract_text(s3_url, sqs_queue_url)
