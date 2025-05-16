@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate } from 'react-router';
 import UploadPage from './pages/UploadPage';
-import VerifyPage from './pages/VerifyPage';
+import VerifyPage from './pages/VerifyPage/VerifyPage';
 import DownloadPage from './pages/DownloadPage';
 import NotSignedInPage from './pages/NotSignedInPage';
 import SignInPage from './pages/SignInPage';
