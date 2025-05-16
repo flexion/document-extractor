@@ -92,7 +92,7 @@ export async function callUpdateDocumentApi(
         failure: 'unauthenticated',
       };
     } else {
-      alert('Failed to save data: ' + response.statusText);
+      console.error('Failed to save data: ' + response.statusText);
       return {
         failure: 'other',
       };

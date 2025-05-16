@@ -1,5 +1,9 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { displayFileName, pollGetDocumentApi } from './verifyPageController';
+import {
+  displayFileName,
+  pollGetDocumentApi,
+  callUpdateDocumentApi,
+} from './verifyPageController';
 import * as api from '../../utils/api';
 
 // Mock the authorizedFetch function
@@ -255,5 +259,99 @@ describe('pollGetDocumentApi', () => {
 });
 
 describe('callUpdateDocumentApi', () => {
-  it('does things', () => {});
+  const mockAuthorizedFetch = api.authorizedFetch as ReturnType<typeof vi.fn>;
+  const documentId = 'test-document-id';
+  const mockExtractedData = {
+    field1: { value: 'value1', confidence: '0.9' },
+    field2: { value: 'value2', confidence: '0.8' },
+  };
+
+  it('should return response data when API call is successful', async () => {
+    // Mock a successful response
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({
+        extracted_data: mockExtractedData,
+      }),
+    };
+    mockAuthorizedFetch.mockResolvedValue(mockResponse);
+
+    const result = await callUpdateDocumentApi(documentId, mockExtractedData);
+
+    expect(mockAuthorizedFetch).toHaveBeenCalledWith(
+      `/api/document/${documentId}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mockExtractedData),
+      }
+    );
+    expect(result).toEqual({
+      responseData: {
+        extracted_data: mockExtractedData,
+      },
+      failure: undefined,
+    });
+  });
+
+  it('should return unauthenticated failure when API returns 401', async () => {
+    // Mock a 401 unauthorized response
+    const mockResponse = {
+      ok: false,
+      status: 401,
+    };
+    mockAuthorizedFetch.mockResolvedValue(mockResponse);
+
+    const result = await callUpdateDocumentApi(documentId, mockExtractedData);
+
+    expect(result).toEqual({
+      failure: 'unauthenticated',
+      responseData: undefined,
+    });
+  });
+
+  it('should return unauthenticated failure when API returns 403', async () => {
+    // Mock a 403 forbidden response
+    const mockResponse = {
+      ok: false,
+      status: 403,
+    };
+    mockAuthorizedFetch.mockResolvedValue(mockResponse);
+
+    const result = await callUpdateDocumentApi(documentId, mockExtractedData);
+
+    expect(result).toEqual({
+      failure: 'unauthenticated',
+      responseData: undefined,
+    });
+  });
+
+  it('should return other failure when API returns other error status', async () => {
+    // Mock a 500 server error response
+    const mockResponse = {
+      ok: false,
+      status: 500,
+    };
+    mockAuthorizedFetch.mockResolvedValue(mockResponse);
+
+    const result = await callUpdateDocumentApi(documentId, mockExtractedData);
+
+    expect(result).toEqual({
+      failure: 'other',
+      responseData: undefined,
+    });
+  });
+
+  it('should return other failure when fetch throws an exception', async () => {
+    // Mock a network error
+    mockAuthorizedFetch.mockRejectedValue(new Error('Network error'));
+
+    const result = await callUpdateDocumentApi(documentId, mockExtractedData);
+
+    expect(result).toEqual({
+      failure: 'other',
+      responseData: undefined,
+    });
+  });
 });
