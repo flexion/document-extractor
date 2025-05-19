@@ -230,6 +230,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/61/ad/689f02752eeec26aed679477e80e632ef1b682313be70793d798c1d5fc8f/PyJWT-2.10.1-py3-none-any.whl", hash = "sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb", size = 22997, upload-time = "2024-11-28T03:43:27.893Z" },
 ]
 
+[package.optional-dependencies]
+crypto = [
+    { name = "cryptography" },
+]
+
 [[package]]
 name = "pytest"
 version = "8.3.5"
@@ -288,13 +293,12 @@ dependencies = [
     { name = "boto3" },
     { name = "cryptography" },
     { name = "iterator-chain" },
-    { name = "pyjwt" },
+    { name = "pyjwt", extra = ["crypto"] },
     { name = "types-boto3", extra = ["apigateway", "dynamodb", "s3", "secretsmanager", "sqs", "textract"] },
 ]
 
 [package.dev-dependencies]
 dev = [
-    { name = "cryptography" },
     { name = "pytest" },
 ]
 
@@ -305,15 +309,12 @@ requires-dist = [
     { name = "boto3", specifier = ">=1.37.1" },
     { name = "cryptography", specifier = ">=44.0.2" },
     { name = "iterator-chain", specifier = ">=1.1.0" },
-    { name = "pyjwt", specifier = ">=2.10.1" },
+    { name = "pyjwt", extras = ["crypto"], specifier = ">=2.10.1" },
     { name = "types-boto3", extras = ["apigateway", "dynamodb", "s3", "secretsmanager", "sqs", "textract"], specifier = ">=1.37.22" },
 ]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "cryptography", specifier = ">=44.0.2" },
-    { name = "pytest", specifier = ">=8.3.5" },
-]
+dev = [{ name = "pytest", specifier = ">=8.3.5" }]
 
 [[package]]
 name = "types-awscrt"
