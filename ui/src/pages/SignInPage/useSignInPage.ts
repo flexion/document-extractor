@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { callCreateTokenApi } from './signInPageController.ts';
 
 export function useSignInPage(setAuthToken: (token: string) => void) {
   const [username, setUsername] = useState<string>('');
@@ -21,49 +22,40 @@ export function useSignInPage(setAuthToken: (token: string) => void) {
     setFormError('');
     setLoading(true);
 
-    let hasError = false;
-
     if (!username) {
       setUsernameError('Please enter your username');
-      hasError = true;
-    }
-
-    if (!password) {
-      setPasswordError('Please enter your password');
-      hasError = true;
-    }
-
-    if (hasError) {
       setLoading(false); // hide spinner if validation failed
       return;
     }
 
-    try {
-      const res = await fetch('/api/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!res.ok) {
-        throw new Error("The email or password you've entered is wrong.");
-      }
-
-      const data = await res.json();
-
-      // store the token
-      setAuthToken(data.access_token);
-      // redirect to upload page
-      navigate('/upload-document');
-    } catch (err) {
-      if (err instanceof Error) {
-        setFormError(err.message);
-      } else {
-        setFormError('An unexpected error occurred');
-      }
-    } finally {
-      setLoading(false); // remove spinner in all cases after request finishes
+    if (!password) {
+      setPasswordError('Please enter your password');
+      setLoading(false); // hide spinner if validation failed
+      return;
     }
+
+    const { responseData, failure } = await callCreateTokenApi(
+      username,
+      password
+    );
+
+    if (failure) {
+      setFormError(failure);
+      setLoading(false);
+      return;
+    }
+
+    if (!responseData) {
+      setFormError('Login failed unexpectedly.  Please try again later.');
+      setLoading(false);
+      return;
+    }
+
+    // store the token
+    setAuthToken(responseData.access_token);
+    // redirect to upload page
+    navigate('/upload-document');
+    setLoading(false);
   }
 
   async function handleUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
