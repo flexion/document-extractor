@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate } from 'react-router';
-import UploadPage from './pages/UploadPage';
+import UploadPage from './pages/UploadPage/UploadPage';
 import VerifyPage from './pages/VerifyPage/VerifyPage';
 import DownloadPage from './pages/DownloadPage';
 import NotSignedInPage from './pages/NotSignedInPage';
