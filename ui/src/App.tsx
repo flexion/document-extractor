@@ -3,7 +3,7 @@ import UploadPage from './pages/UploadPage';
 import VerifyPage from './pages/VerifyPage/VerifyPage';
 import DownloadPage from './pages/DownloadPage';
 import NotSignedInPage from './pages/NotSignedInPage';
-import SignInPage from './pages/SignInPage';
+import SignInPage from './pages/SignInPage/SignInPage';
 import { useEffect, useState } from 'react';
 
 export default function App() {
