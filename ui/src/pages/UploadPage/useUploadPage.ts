@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { AlertType, uploadFile } from './uploadPageController';
+import { AlertType, callCreateDocumentApi } from './uploadPageController';
 
 export interface UseUploadPageHook {
   alertMessage: string;
@@ -31,7 +31,7 @@ export function useUploadPage(signOut: () => Promise<void>): UseUploadPageHook {
       return;
     }
 
-    const { responseData, failure } = await uploadFile(file);
+    const { responseData, failure } = await callCreateDocumentApi(file);
 
     if (failure === 'unauthenticated') {
       showAlert(

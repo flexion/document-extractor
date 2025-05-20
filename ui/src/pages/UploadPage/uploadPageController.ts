@@ -2,22 +2,22 @@ import { authorizedFetch, NewDocumentResponse } from '../../utils/api.ts';
 
 export type AlertType = 'error' | 'success';
 
-interface UploadFileResponse {
+interface CallCreateDocumentApiResponse {
   responseData?: NewDocumentResponse;
   failure?: 'unauthenticated' | 'other';
 }
 
-export async function uploadFile(file: File): Promise<UploadFileResponse> {
+export async function callCreateDocumentApi(
+  file: File
+): Promise<CallCreateDocumentApiResponse> {
   try {
-    // Read the file as Base64
     const base64File = await readFileAsBase64(file);
     const requestBody = {
       file_content: base64File,
       file_name: file.name,
     };
 
-    const apiUrl = '/api/document';
-    const response = await authorizedFetch(apiUrl, {
+    const response = await authorizedFetch('/api/document', {
       method: 'POST',
       body: JSON.stringify(requestBody),
     });
