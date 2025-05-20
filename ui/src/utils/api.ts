@@ -1,3 +1,8 @@
+export interface CreateTokenResponse {
+  access_token: string;
+  token_type: string;
+}
+
 export interface NewDocumentResponse {
   message: string;
   documentId: string;
