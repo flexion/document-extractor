@@ -4,12 +4,16 @@ import os
 
 from src import context
 from src.external.aws.secret_manager import SecretManager
+from src.logging_config import setup_logger
 from src.login.login import generate_token, has_valid_credentials
 from src.secret.cloud_secret_manager import CloudSecretManager
 
 appContext = context.ApplicationContext()
 appContext.register(CloudSecretManager, SecretManager())
+
 environment = os.environ["ENVIRONMENT"]
+
+setup_logger()
 
 
 def lambda_handler(event, context):

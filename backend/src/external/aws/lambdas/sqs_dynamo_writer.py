@@ -9,6 +9,7 @@ from src.context import ApplicationContext
 from src.database.database import Database
 from src.documents import write_document
 from src.external.aws.dynamodb import DynamoDb
+from src.logging_config import setup_logger
 
 sqs_queue_url = os.environ["SQS_QUEUE_URL"]
 
@@ -16,8 +17,11 @@ appContext = ApplicationContext()
 appContext.register(Database, DynamoDb())
 appContext.register(SQSClient, boto3.client("sqs"))
 
+setup_logger()
+
 
 def lambda_handler(event, context):
+    logging.info("Process to write from SQS to Dynamo has started...")
     for record in event["Records"]:
         try:
             message_body = json.loads(record["body"])
