@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from decimal import Decimal
 
@@ -9,7 +10,7 @@ from src.logging_config import setup_logger
 dynamodb = boto3.resource("dynamodb")
 DYNAMODB_TABLE = os.getenv("DYNAMODB_TABLE")
 
-logger = setup_logger(__name__)
+setup_logger()
 
 
 def convert_to_dynamodb_format(data):
@@ -51,7 +52,7 @@ def lambda_handler(event, context):
             ReturnValues="ALL_NEW",
         )
 
-        logger.info(f"Update Response: {response}")
+        logging.info(f"Update Response: {response}")
 
         updated_item = response.get("Attributes", {})
 
@@ -67,5 +68,5 @@ def lambda_handler(event, context):
         }
 
     except Exception as e:
-        logger.error({str(e)})
+        logging.error({str(e)})
         return {"statusCode": 500, "body": json.dumps({"error": str(e)})}

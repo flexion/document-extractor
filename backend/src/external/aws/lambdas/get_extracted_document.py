@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 
 from src import context
 from src.database.database import Database
@@ -13,7 +14,7 @@ appContext = context.ApplicationContext()
 appContext.register(CloudStorage, S3())
 appContext.register(Database, DynamoDb())
 
-logger = setup_logger(__name__)
+setup_logger()
 
 
 def lambda_handler(event, context):
@@ -25,6 +26,7 @@ def lambda_handler(event, context):
         }
 
     try:
+        logging.info("Starting document retrieval...")
         document_info, storage_access_url, document_data = get_document.get_document(document_id)
 
         if document_info is None:
@@ -44,11 +46,12 @@ def lambda_handler(event, context):
         }
     except Exception as e:
         exception_message = f"An internal error happened while trying to get document {document_id}"
-        logger.error(exception_message)
-        logger.exception(e)
+        logging.error(exception_message)
+        logging.exception(e)
         return {
             "statusCode": 500,
             "body": json.dumps(exception_message),
         }
 
+    logging.info("Finished retrieving document.")
     return {"statusCode": 200, "body": json.dumps(response)}

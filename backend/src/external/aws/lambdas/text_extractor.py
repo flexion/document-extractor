@@ -1,3 +1,4 @@
+import logging
 import os
 
 import boto3
@@ -18,7 +19,7 @@ appContext.register(Ocr, Textract())
 appContext.register(CloudStorage, S3())
 appContext.register(SQSClient, boto3.client("sqs"))
 
-logger = setup_logger(__name__)
+setup_logger()
 
 sqs_queue_url = os.environ["SQS_QUEUE_URL"]
 
@@ -29,24 +30,24 @@ def lambda_handler(event: events.S3Event, context: lambda_context.Context):
     document_key = record["s3"]["object"]["key"]
 
     s3_url = f"s3://{bucket_name}/{document_key}"
-    logger.info(f"Processing {s3_url}")
+    logging.info(f"Processing {s3_url}")
 
     try:
         extract_text.extract_text(s3_url, sqs_queue_url)
     except FileNotFoundError as e:
         exception_message = f"Failed to find the file {s3_url}"
-        logger.error(exception_message)
-        logger.exception(e)
+        logging.error(exception_message)
+        logging.exception(e)
         raise
     except OcrException as e:
         exception_message = f"Failed OCR of {s3_url}"
-        logger.error(exception_message)
-        logger.exception(e)
+        logging.error(exception_message)
+        logging.exception(e)
         raise
     except Exception as e:
         exception_message = "Failed to send message to queue"
-        logger.error(exception_message)
-        logger.exception(e)
+        logging.error(exception_message)
+        logging.exception(e)
         raise
 
-    logger.info("Document processed successfully and sent to SQS")
+    logging.info("Document processed successfully and sent to SQS")

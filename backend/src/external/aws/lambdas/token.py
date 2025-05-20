@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from src import context
@@ -12,13 +13,13 @@ appContext.register(CloudSecretManager, SecretManager())
 
 environment = os.environ["ENVIRONMENT"]
 
-logger = setup_logger(__name__)
+setup_logger()
 
 
 def lambda_handler(event, context):
-    logger.info("Getting username and password from request body")
+    logging.info("Getting username and password from request body")
     if "body" not in event or "username" not in event["body"] or "password" not in event["body"]:
-        logger.warning("Credentials missing in request body")
+        logging.warning("Credentials missing in request body")
         return {
             "statusCode": 400,
             "body": json.dumps({"error": "No file provided"}),
@@ -29,7 +30,7 @@ def lambda_handler(event, context):
 
     try:
         if not has_valid_credentials(username, password, environment):
-            logger.warning("Invalid credentials")
+            logging.warning("Invalid credentials")
             return {"statusCode": 401, "body": json.dumps({"error": "Invalid credentials"})}
     except Exception as e:
         return {
@@ -39,7 +40,7 @@ def lambda_handler(event, context):
 
     # Create JWT token
     try:
-        logger.info("Generating JWT")
+        logging.info("Generating JWT")
         token = generate_token(username, environment)
     except Exception as e:
         return {

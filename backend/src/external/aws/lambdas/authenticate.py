@@ -1,3 +1,4 @@
+import logging
 import os
 
 from src import context
@@ -12,17 +13,17 @@ appContext = context.ApplicationContext()
 appContext.register(CloudSecretManager, SecretManager())
 appContext.register(Role, Iam())
 
-logger = setup_logger(__name__)
+setup_logger()
 
 ENVIRONMENT = os.environ["ENVIRONMENT"]
 
 
 def lambda_handler(event, context):
     token = event["authorizationToken"].replace("Bearer ", "")
-    logger.info("Verifying JWT token")
+    logging.info("Verifying JWT token")
     if has_valid_token(token, ENVIRONMENT):
-        logger.info("A valid token is present. Generating allow policy...")
+        logging.info("A valid token is present. Generating allow policy...")
         return generate_role("user", "Allow", event["methodArn"])
     else:
-        logger.info("A invalid token is present. Generating deny policy...")
+        logging.info("A invalid token is present. Generating deny policy...")
         return generate_role("user", "Deny", event["methodArn"])

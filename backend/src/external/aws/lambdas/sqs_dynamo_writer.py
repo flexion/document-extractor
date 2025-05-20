@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 import boto3
@@ -16,11 +17,11 @@ appContext = ApplicationContext()
 appContext.register(Database, DynamoDb())
 appContext.register(SQSClient, boto3.client("sqs"))
 
-logger = setup_logger(__name__)
+setup_logger()
 
 
 def lambda_handler(event, context):
-    logger.info("Process to write from SQS to Dynamo has started...")
+    logging.info("Process to write from SQS to Dynamo has started...")
     for record in event["Records"]:
         try:
             message_body = json.loads(record["body"])
@@ -35,8 +36,8 @@ def lambda_handler(event, context):
             sqs_client.delete_message(QueueUrl=sqs_queue_url, ReceiptHandle=record["receiptHandle"])
         except Exception as e:
             exception_message = "An internal error happened while trying to save a document to the database"
-            logger.error(exception_message)
-            logger.exception(e)
+            logging.error(exception_message)
+            logging.exception(e)
             raise
 
-    logger.info("Process complete")
+    logging.info("Process complete")
