@@ -10,7 +10,7 @@ dependencies = [
     "boto3>=1.37.1",
     "cryptography>=44.0.2",
     "iterator-chain>=1.1.0",
-    "pyjwt>=2.10.1",
+    "pyjwt[crypto]>=2.10.1",
     "types-boto3[apigateway,dynamodb,s3,secretsmanager,sqs,textract]>=1.37.22",
 ]
 
@@ -29,6 +29,5 @@ select = [
 
 [dependency-groups]
 dev = [
-    "cryptography>=44.0.2",
     "pytest>=8.3.5",
 ]
