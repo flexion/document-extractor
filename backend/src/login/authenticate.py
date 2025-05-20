@@ -6,8 +6,6 @@ from src import context
 from src.login.user.role import Role
 from src.secret import CloudSecretManager
 
-logger = logging.getLogger(__name__)
-
 
 @context.inject
 def has_valid_token(token, environment, cloud_secret_manager: CloudSecretManager = None) -> bool:
@@ -17,7 +15,7 @@ def has_valid_token(token, environment, cloud_secret_manager: CloudSecretManager
         return True
     except jwt.PyJWTError:
         exception_message = "Failed to authenticate token"
-        logger.warning(exception_message)
+        logging.warning(exception_message)
         return False
 
 
