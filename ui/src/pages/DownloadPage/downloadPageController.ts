@@ -1,4 +1,4 @@
-import { ExtractedData } from '../../utils/api';
+import { ExtractedData, UpdateDocumentResponse } from '../../utils/api';
 
 export function generateCsvData(extractedData: ExtractedData): string {
   let csvData = 'Field,Value\n';
@@ -14,4 +14,36 @@ export function generateCsvData(extractedData: ExtractedData): string {
   });
 
   return csvData;
+}
+
+export async function downloadCSV(verifiedData: UpdateDocumentResponse) {
+  const csvContent = generateCsvData(verifiedData.extracted_data ?? {});
+
+  await downloadData(csvContent, 'text/csv', 'document.csv');
+}
+
+export async function downloadJSON(verifiedData: UpdateDocumentResponse) {
+  const jsonContent = JSON.stringify(verifiedData, null, 2);
+
+  await downloadData(jsonContent, 'application/json', 'document.json');
+}
+
+export async function downloadData(
+  content: string,
+  contentType: string,
+  filename: string
+) {
+  const blob = new Blob([content], { type: contentType });
+  const url = URL.createObjectURL(blob);
+
+  try {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+  } finally {
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000); // Small delay to ensure download starts
+  }
 }

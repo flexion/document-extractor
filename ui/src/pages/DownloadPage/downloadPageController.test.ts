@@ -29,3 +29,9 @@ describe('generateCsvData', () => {
     expect(csvData).toContain('"dKey","something with, commas"');
   });
 });
+
+describe('downloadData', () => {});
+
+describe('downloadCSV', () => {});
+
+describe('downloadJSON', () => {});
