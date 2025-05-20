@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Layout from '../components/Layout';
-import { generateCsvData } from '../utils/downloadPageController';
-import { UpdateDocumentResponse } from '../utils/api';
+import Layout from '../../components/Layout';
+import { generateCsvData } from '../../utils/downloadPageController';
+import { UpdateDocumentResponse } from '../../utils/api';
 
 interface DownloadPageProps {
   signOut: () => Promise<void>;
