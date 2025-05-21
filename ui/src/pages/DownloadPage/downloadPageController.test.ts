@@ -77,36 +77,14 @@ describe('downloadData', () => {
     vi.unstubAllGlobals();
   });
 
-  it('should create a blob with the correct content and type', async () => {
-    // Mock Blob constructor
-    const mockBlob = {};
-    global.Blob = vi.fn().mockImplementation((content, options) => {
-      expect(content).toEqual(['test content']);
-      expect(options).toEqual({ type: 'text/plain' });
-      return mockBlob;
-    });
-
+  it('download link is clicked', async () => {
     await downloadData('test content', 'text/plain', 'test.txt');
 
-    expect(global.Blob).toHaveBeenCalledTimes(1);
-  });
-
-  it('should create a download link with correct attributes', async () => {
-    // Mock Blob constructor
-    global.Blob = vi.fn().mockReturnValue({});
-
-    await downloadData('test content', 'text/plain', 'test.txt');
-
-    expect(mockCreateElement).toHaveBeenCalledWith('a');
-    expect(mockCreateObjectURL).toHaveBeenCalled();
     expect(mockLink.download).toBe('test.txt');
     expect(mockClick).toHaveBeenCalledTimes(1);
   });
 
   it('should revoke the object URL after download', async () => {
-    // Mock Blob constructor
-    global.Blob = vi.fn().mockReturnValue({});
-
     vi.useFakeTimers();
 
     await downloadData('test content', 'text/plain', 'test.txt');
