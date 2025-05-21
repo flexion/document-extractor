@@ -28,7 +28,7 @@ export async function downloadJSON(verifiedData: UpdateDocumentResponse) {
   await downloadData(jsonContent, 'application/json', 'document.json');
 }
 
-export async function downloadData(
+async function downloadData(
   content: string,
   contentType: string,
   filename: string
