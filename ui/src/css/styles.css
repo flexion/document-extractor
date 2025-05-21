@@ -31,7 +31,8 @@
 .grid-container,
 .usa-nav-container,
 .usa-banner__content,
-.usa-banner__inner {
+.usa-banner__inner,
+.footer-content {
   max-width: 80rem;
 }
 
@@ -106,8 +107,85 @@
 .loading-content {
   text-align: center;
 }
+
+.usa-logo a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.usa-logo a .usa-logo__text {
+  margin-bottom: 0.35rem;
+}
+
+.footer-el {
+  background-color: #1f2937;
+}
+.footer-content {
+  color: #f9fafb;
+  padding: 4.5rem 2rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.6;
+  margin: 0 auto;
+}
+.footer-content a {
+  color: #f9fafb;
+  text-decoration: underline;
+}
+.footer-content a:hover {
+  text-decoration: underline;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+.footer-logo {
+  max-width: 180px;
+}
+.footer-tagline {
+  font-size: 1.15rem;
+  font-weight: 300;
+  max-width: 800px;
+  margin: 0.5em 0 0;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #3c516e;
+}
+.footer-col.badge p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+}
+.footer-col ul li {
+  margin-bottom: 0.3rem;
+}
+.footer-bottom {
+  font-size: 0.85rem;
+  color: #dfe3e6;
+}
+.footer-bottom p {
+  margin: 0.5em 0;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (width >= 64em) {
+  .usa-logo {
+    font-size: 1.65rem;
   }
 }
