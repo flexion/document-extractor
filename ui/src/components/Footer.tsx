@@ -1,115 +1,115 @@
-import logo from 'url:../assets/GSA-logo.svg';
+import flexionLogo from 'url:../assets/Flexion_logo.svg';
+import vanguardFedCiv from 'url:../assets/vanguard-FedCiv.png';
+import digitalservicescoalition from 'url:../assets/digitalservicescoalition.png';
 
 export default function Footer() {
   return (
-    <footer>
-      <div className="usa-identifier">
-        <section
-          className="usa-identifier__section usa-identifier__section--masthead"
-          aria-label="Agency identifier"
-        >
-          <div className="usa-identifier__container">
-            <div className="usa-identifier__logos">
-              <a href="javascript:void(0);" className="usa-identifier__logo">
-                <img
-                  className="usa-identifier__logo-img"
-                  src={logo}
-                  alt="&lt;Parent agency&gt; logo"
-                  role="img"
-                />
+    <footer className="footer-el" role="contentinfo">
+      <div className="footer-content">
+        <div className="footer-brand">
+          <img className="footer-logo" src={flexionLogo} alt="Flexion logo" />
+          <p className="footer-tagline">
+            Using an agile, human-centered design mindset, we transform digital
+            technology to create powerful experiences for all.
+          </p>
+        </div>
+
+        <div className="footer-grid">
+          <div
+            className="footer-col contact"
+            aria-label="Company contact information"
+          >
+            <p>
+              Flexion Inc.
+              <br />
+              811 E Washington Ave
+              <br />
+              Suite 400
+              <br />
+              Madison, WI 53703
+              <br />
+              Phone: <a href="tel:6088348600">608.834.8600</a>
+              <br />
+              <a href="mailto:flexion@flexion.us">flexion@flexion.us</a>
+              <br />
+              <a
+                href="https://namedrop.io/FlexionInc"
+                className="usa-identifier__required-link"
+              >
+                Hear “Flexion” pronounced
               </a>
-            </div>
-            <section
-              className="usa-identifier__identity"
-              aria-label="Agency description"
-            >
-              <p className="usa-identifier__identity-disclaimer">
-                An official website of the
-                <a href="https://www.gsa.gov">
-                  U.S. General Services Administration
-                </a>
-              </p>
-            </section>
+            </p>
           </div>
-        </section>
-        <nav
-          className="usa-identifier__section usa-identifier__section--required-links"
-          aria-label="Important links"
-        >
-          <div className="usa-identifier__container">
-            <ul className="usa-identifier__required-links-list">
-              <li className="usa-identifier__required-links-item">
-                <a
-                  href="https://www.gsa.gov/about-us"
-                  className="usa-identifier__required-link"
-                >
-                  About GSA
-                </a>
+
+          <div className="footer-col nav">
+            <ul>
+              <li>
+                <a href="#">Services</a>
               </li>
-              <li className="usa-identifier__required-links-item">
-                <a
-                  href="javascript:void(0);"
-                  className="usa-identifier__required-link"
-                >
-                  Accessibility support
-                </a>
+              <li>
+                <a href="#">How We Work</a>
               </li>
-              <li className="usa-identifier__required-links-item">
-                <a
-                  href="javascript:void(0);"
-                  className="usa-identifier__required-link usa-link"
-                >
-                  FOIA requests
-                </a>
+              <li>
+                <a href="#">Who We Serve</a>
               </li>
-              <li className="usa-identifier__required-links-item">
-                <a
-                  href="javascript:void(0);"
-                  className="usa-identifier__required-link usa-link"
-                >
-                  No FEAR Act data
-                </a>
+              <li>
+                <a href="#">Careers</a>
               </li>
-              <li className="usa-identifier__required-links-item">
-                <a
-                  href="javascript:void(0);"
-                  className="usa-identifier__required-link usa-link"
-                >
-                  Office of the Inspector General
-                </a>
+              <li>
+                <a href="#">Contact Us</a>
               </li>
-              <li className="usa-identifier__required-links-item">
-                <a
-                  href="javascript:void(0);"
-                  className="usa-identifier__required-link usa-link"
-                >
-                  Performance reports
-                </a>
-              </li>
-              <li className="usa-identifier__required-links-item">
-                <a
-                  href="javascript:void(0);"
-                  className="usa-identifier__required-link usa-link"
-                >
-                  Privacy policy
-                </a>
+              <li>
+                <a href="#">Blog</a>
               </li>
             </ul>
           </div>
-        </nav>
-        <section
-          className="usa-identifier__section usa-identifier__section--usagov"
-          aria-label="U.S. government information and services,"
-        >
-          <div className="usa-identifier__container">
-            <div className="usa-identifier__usagov-description">
-              Looking for U.S. government information and services?
-            </div>
-            <a href="https://www.usa.gov/" className="usa-link">
-              Visit USA.gov
-            </a>
+
+          <div className="footer-col badge">
+            <img
+              src={vanguardFedCiv}
+              alt="Vanguard FedCiv 250 Badge"
+              className="footer-badge"
+            />
+            <p>
+              Honored to be on the Prestigious
+              <br />
+              Vanguard FedCiv 250 List 2025
+            </p>
           </div>
-        </section>
+
+          <div className="footer-col badge">
+            <img
+              src={digitalservicescoalition}
+              alt="Digital Services Coalition logo"
+              className="footer-badge"
+            />
+            <p>
+              We’re a proud founding member
+              <br />
+              of the Digital Services Coalition
+            </p>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>
+            &copy; 2021 – 2025 Flexion Inc. All rights reserved. Flexion® is a
+            registered trademark of Flexion Inc. See our{' '}
+            <a href="#">Privacy Policy</a>.
+          </p>
+          <p>
+            Flexion Inc. is an Equal Employment Opportunity Employer{' '}
+            <a href="#">Know Your Rights</a>. Flexion Inc. participates in the
+            E-Verify Program <a href="#">E-Verify Notice</a>. We also want you
+            to know your right to work <a href="#">English</a> |{' '}
+            <a href="#">Spanish</a>.
+          </p>
+          <p>
+            Flexion Inc. is <a href="#">ISO/IEC 27001:2013</a>,{' '}
+            <a href="#">ISO/IEC 20000-1:2018</a>, and{' '}
+            <a href="#">ISO 9001:2015</a> certified.
+          </p>
+        </div>
       </div>
     </footer>
   );
