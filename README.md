@@ -1,5 +1,8 @@
 # Document Extractor Proof of Concept
 
+> [!WARNING]
+> This application is no longer being developed or maintained.
+
 Public Benefits Studio's Document Extractor to automate document data extraction with AI and OCR.
 
 ## Using and Running
