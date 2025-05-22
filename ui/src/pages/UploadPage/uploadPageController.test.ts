@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { callCreateDocumentApi } from './uploadPageController';
 import * as api from '../../utils/api';
 
@@ -28,10 +28,12 @@ class MockFileReader {
   }
 }
 
-// allow `new FileReader()` to work even in a node (test) environment
-vi.stubGlobal('FileReader', MockFileReader);
-
 describe('callCreateDocumentApi', () => {
+  beforeEach(() => {
+    // allow `new FileReader()` to work even in a node (test) environment
+    vi.stubGlobal('FileReader', MockFileReader);
+  });
+
   const mockAuthorizedFetch = api.authorizedFetch as ReturnType<typeof vi.fn>;
 
   // Create a mock File object
@@ -165,10 +167,8 @@ describe('callCreateDocumentApi', () => {
 
   it('should handle file reading errors', async () => {
     // Set the MockFileReader to fail
-    const originalFileReader = globalThis.FileReader;
     const mockFileReaderInstance = new MockFileReader();
     mockFileReaderInstance.readSuccess = false;
-
     // Override the FileReader constructor to return our configured instance
     vi.stubGlobal('FileReader', function () {
       return mockFileReaderInstance;
@@ -181,9 +181,6 @@ describe('callCreateDocumentApi', () => {
       failure: 'other',
       responseData: undefined,
     });
-
-    // Restore the original FileReader
-    vi.stubGlobal('FileReader', originalFileReader);
   });
 
   it('should handle empty files', async () => {
