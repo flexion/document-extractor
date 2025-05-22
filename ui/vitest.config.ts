@@ -5,6 +5,6 @@ export default defineConfig({
     environment: 'node',
     restoreMocks: true,
     unstubEnvs: true,
-    // unstubGlobals: true,
+    unstubGlobals: true,
   },
 });
