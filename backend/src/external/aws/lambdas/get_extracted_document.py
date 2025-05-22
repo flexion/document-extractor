@@ -7,11 +7,14 @@ from src.database.database import Database
 from src.documents import get_document
 from src.external.aws.dynamodb import DynamoDb
 from src.external.aws.s3 import S3
+from src.logging_config import setup_logger
 from src.storage import CloudStorage
 
 appContext = context.ApplicationContext()
 appContext.register(CloudStorage, S3())
 appContext.register(Database, DynamoDb())
+
+setup_logger()
 
 
 def lambda_handler(event, context):
@@ -23,6 +26,7 @@ def lambda_handler(event, context):
         }
 
     try:
+        logging.info("Starting document retrieval...")
         document_info, storage_access_url, document_data = get_document.get_document(document_id)
 
         if document_info is None:
@@ -49,4 +53,5 @@ def lambda_handler(event, context):
             "body": json.dumps(exception_message),
         }
 
+    logging.info("Finished retrieving document.")
     return {"statusCode": 200, "body": json.dumps(response)}
