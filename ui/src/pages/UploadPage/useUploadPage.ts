@@ -42,7 +42,7 @@ export function useUploadPage(signOut: () => Promise<void>): UseUploadPageHook {
         signOut();
       }, 5000);
       return;
-    } else if (!failure) {
+    } else if (failure) {
       showAlert('An error occurred while uploading!', 'error');
       return;
     }
