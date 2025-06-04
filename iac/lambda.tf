@@ -15,7 +15,7 @@ resource "aws_lambda_function" "text_extract" {
   handler = "src.external.aws.lambdas.text_extractor.lambda_handler"
 
   memory_size                    = 256
-  timeout                        = 30
+  timeout                        = 90
   runtime                        = "python3.13"
   reserved_concurrent_executions = -1
   publish                        = true
